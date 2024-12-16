@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { obtenirTousLesProjets, supprimerProjet } from '../services/apiProjets'; // Assurez-vous que ces fonctions sont définies correctement dans apiProjet.js
+import { obtenirTousLesProjets, supprimerProjet } from '../services/apiProjets';
 
 const ProjectManagement = () => {
     const [projects, setProjects] = useState([]);
