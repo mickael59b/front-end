@@ -12,24 +12,22 @@ const ProjectManagement = () => {
     // Charger les projets depuis l'API
     useEffect(() => {
         const fetchProjects = async () => {
-            console.log('Fetching projects...'); // Log avant d'envoyer la requête
+            console.log('Fetching projects...');
             try {
                 const response = await obtenirTousLesProjets();
-                console.log('Response:', response); // Log de la réponse entière
-
+                console.log('Response:', response);
                 if (response && response.projects) {
-                    // Vérifiez la structure de la réponse pour voir où sont les projets
                     console.log('Projets récupérés:', response.projects);
                     setProjects(response.projects); // Mettez à jour l'état avec les projets
                 } else {
                     setError('Aucun projet trouvé dans la réponse.');
                 }
             } catch (error) {
-                console.error('Erreur lors du chargement des projets:', error); // Log de l'erreur
+                console.error('Erreur lors du chargement des projets:', error);
                 setError('Erreur lors du chargement des projets');
             } finally {
                 setLoading(false);
-                console.log('Loading finished'); // Log après que le chargement soit terminé
+                console.log('Loading finished');
             }
         };
 
@@ -45,16 +43,15 @@ const ProjectManagement = () => {
     const handleDelete = async (id) => {
         console.log('Deleting project with ID:', id); // Log avant la suppression
         try {
-            const success = await supprimerProjet(id);
-            console.log('Delete success:', success); // Log du succès de la suppression
-
-            if (success) {
+            const success = await supprimerProjet(id); // Assurez-vous que l'ID est correct
+            console.log('Delete success:', success);
+            if (success.success) {
                 // Si la suppression réussie, on réactualise la liste des projets
-                setProjects(projects.filter(project => project.id !== id));
+                setProjects(projects.filter(project => project._id !== id)); // Utilisez _id au lieu de id
                 console.log('Project deleted. New list:', projects); // Log après suppression
             }
         } catch (error) {
-            console.error('Erreur lors de la suppression du projet:', error); // Log de l'erreur de suppression
+            console.error('Erreur lors de la suppression du projet:', error);
             setError('Erreur lors de la suppression du projet');
         }
     };
@@ -115,14 +112,14 @@ const ProjectManagement = () => {
                     </thead>
                     <tbody>
                         {filteredProjects.map((project) => (
-                            <tr key={project.id}>
+                            <tr key={project._id}> {/* Utilisez _id ici */}
                                 <td>{project.title}</td>
                                 <td>{project.description}</td>
                                 <td>{project.status}</td>
                                 <td>
                                     <button
                                         className="btn btn-danger"
-                                        onClick={() => handleDelete(project.id)}
+                                        onClick={() => handleDelete(project._id)} // Utilisez _id ici
                                     >
                                         Supprimer
                                     </button>
