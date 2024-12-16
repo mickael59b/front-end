@@ -36,49 +36,28 @@ const CreateProject = () => {
     }
   };
 
-  // Fonction pour uploader l'image sur GitHub
-  const uploadImageToGitHub = async (imageFile) => {
-    const fileName = `uploads/${Date.now()}-${imageFile.name}`;
-    const fileContent = await readFileAsBase64(imageFile); // Convertir l'image en base64
-
-    const url = `https://api.github.com/repos/${process.env.REACT_APP_GITHUB_REPO_OWNER}/${process.env.REACT_APP_GITHUB_REPO_NAME}/contents/${fileName}`;
-    const commitMessage = `Add image ${fileName}`;
+  // Fonction pour uploader l'image via l'API
+  const uploadImage = async (imageFile) => {
+    const formData = new FormData();
+    formData.append('image', imageFile); // Ajouter l'image à la FormData
 
     try {
-      const response = await fetch(url, {
-        method: 'PUT',
-        headers: {
-          Authorization: `Bearer ${process.env.REACT_APP_GITHUB_TOKEN}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: commitMessage,
-          content: fileContent,  // Contenu de l'image en base64
-          branch: process.env.REACT_APP_GITHUB_BRANCH
-        })
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
       });
 
       const data = await response.json();
 
-      if (response.status !== 201 || data.error) {
-        throw new Error(data.error?.message || 'Erreur lors de l\'upload sur GitHub');
+      if (response.ok) {
+        return data.imageUrl; // Retourne l'URL de l'image uploadée
+      } else {
+        throw new Error('Erreur lors de l\'upload de l\'image');
       }
-
-      return data.content.download_url; // URL de l'image sur GitHub
     } catch (error) {
-      console.error('Erreur lors de l\'upload sur GitHub :', error);
+      console.error('Erreur lors de l\'upload de l\'image :', error);
       throw new Error('Upload échoué : ' + error.message);
     }
-  };
-
-  // Fonction pour lire le fichier en base64
-  const readFileAsBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onloadend = () => resolve(reader.result.split(',')[1]); // Extraire la partie base64
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
   };
 
   const handleSubmit = async (e) => {
@@ -86,9 +65,10 @@ const CreateProject = () => {
 
     let imageUrl = projectData.image;
 
+    // Upload de l'image si elle existe
     if (projectData.image) {
       try {
-        imageUrl = await uploadImageToGitHub(projectData.image); // Obtenir l'URL de l'image uploadée sur GitHub
+        imageUrl = await uploadImage(projectData.image); // Obtenir l'URL de l'image uploadée via l'API
       } catch (error) {
         alert('Erreur lors de l\'upload de l\'image');
         return;
