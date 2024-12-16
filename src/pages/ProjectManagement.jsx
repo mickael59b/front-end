@@ -43,25 +43,29 @@ const ProjectManagement = () => {
     const handleDelete = async (id) => {
         console.log('Deleting project with ID:', id); // Log avant la suppression
         try {
+          // Appel de la fonction pour supprimer le projet via l'API
           const success = await supprimerProjet(id); // Assurez-vous que l'ID est correct
-          console.log('Delete success:', success);
       
+          // Si la suppression est un succès
           if (success.success) {
-            // Supprimer le projet localement sans avoir à faire une nouvelle requête à l'API
+            // Mettre à jour l'état local des projets
             setProjects(prevProjects => {
               console.log('Previous projects before deletion:', prevProjects);
       
-              // Filtrer le projet supprimé
+              // Filtrer le projet supprimé pour ne pas l'afficher
               const updatedProjects = prevProjects.filter(project => project._id !== id);
       
               console.log('Updated projects after deletion:', updatedProjects);
       
-              // Retourner la nouvelle liste des projets
+              // Retourner la nouvelle liste de projets, qui exclut celui qui a été supprimé
               return updatedProjects;
             });
+          } else {
+            // En cas d'erreur dans la suppression
+            console.error('Failed to delete project');
           }
         } catch (error) {
-          console.error('Erreur lors de la suppression du projet:', error);
+          console.error('Error during project deletion:', error);
           setError('Erreur lors de la suppression du projet');
         }
     };
