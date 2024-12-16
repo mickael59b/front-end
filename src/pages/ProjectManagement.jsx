@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { obtenirTousLesProjets, supprimerProjet } from '../services/apiProjets';  // Assurez-vous que ces fonctions sont définies correctement dans apiProjet.js
-import Spinner from 'react-bootstrap/Spinner'; // Pour l'indicateur de chargement
-import { Button, Table, Alert, Form } from 'react-bootstrap';  // Bootstrap components
+import { obtenirTousLesProjets, supprimerProjet } from '../services/apiProjets'; // Assurez-vous que ces fonctions sont définies correctement dans apiProjet.js
 
 const ProjectManagement = () => {
     const [projects, setProjects] = useState([]);
@@ -27,7 +25,7 @@ const ProjectManagement = () => {
                 setLoading(false);
             }
         };
-        
+
         fetchProjects();
     }, []);
 
@@ -54,26 +52,28 @@ const ProjectManagement = () => {
             <h1 className="mb-4">Gestion des Projets</h1>
 
             {/* Affichage des erreurs */}
-            {error && <Alert variant="danger">{error}</Alert>}
+            {error && <div className="alert alert-danger">{error}</div>}
 
             {/* Chargement en cours */}
             {loading && (
                 <div className="text-center">
-                    <Spinner animation="border" variant="primary" />
+                    <div className="spinner-border" role="status">
+                        <span className="visually-hidden">Chargement...</span>
+                    </div>
                 </div>
             )}
 
             {/* Filtrage des projets */}
             <div className="d-flex justify-content-between align-items-center mb-3">
-                <Button
-                    variant="primary"
+                <button
+                    className="btn btn-primary"
                     onClick={() => navigate('/dashboard/projet/new')}
                 >
                     <i className="fas fa-plus-circle me-2"></i>Créer un Projet
-                </Button>
-                <Form.Select
+                </button>
+                <select
+                    className="form-select w-auto"
                     aria-label="Filtrer les projets"
-                    className="w-auto"
                     value={filter}
                     onChange={(e) => setFilter(e.target.value)}
                 >
@@ -81,12 +81,12 @@ const ProjectManagement = () => {
                     <option value="Started">En Cours</option>
                     <option value="Completed">Terminé</option>
                     <option value="Approval">En Attente</option>
-                </Form.Select>
+                </select>
             </div>
 
             {/* Affichage des projets sous forme de tableau */}
             {!loading && filteredProjects.length > 0 && (
-                <Table striped bordered hover responsive>
+                <table className="table table-striped table-bordered table-hover">
                     <thead>
                         <tr>
                             <th>Titre</th>
@@ -102,22 +102,22 @@ const ProjectManagement = () => {
                                 <td>{project.description}</td>
                                 <td>{project.status}</td>
                                 <td>
-                                    <Button
-                                        variant="danger"
+                                    <button
+                                        className="btn btn-danger"
                                         onClick={() => handleDelete(project.id)}
                                     >
                                         Supprimer
-                                    </Button>
+                                    </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
-                </Table>
+                </table>
             )}
 
             {/* Message quand il n'y a pas de projets */}
             {!loading && filteredProjects.length === 0 && (
-                <Alert variant="info">Aucun projet trouvé.</Alert>
+                <div className="alert alert-info">Aucun projet trouvé.</div>
             )}
         </div>
     );
