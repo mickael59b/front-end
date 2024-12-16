@@ -1,0 +1,20 @@
+.lists {
+    background-image: url(../images/contact-bg.png); /* Chemin relatif */
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: cover; /* Ajuste l'image à la taille de l'élément */
+    position: relative;
+    height: 290px; /* Taille temporaire pour tester */
+    width: 100%; /* S'étend sur toute la largeur */
+}
+
+.lists:before {
+    content: "";
+    background: rgba(255, 255, 255, 0.3); /* Superposition blanche transparente */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1; /* Superposition visible */
+}
