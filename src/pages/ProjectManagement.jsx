@@ -12,17 +12,22 @@ const ProjectManagement = () => {
     // Charger les projets depuis l'API
     useEffect(() => {
         const fetchProjects = async () => {
+            console.log('Fetching projects...'); // Log avant d'envoyer la requête
             try {
                 const response = await obtenirTousLesProjets();
+                console.log('Response:', response); // Log la réponse de l'API
+
                 if (response.success) {
                     setProjects(response.projects);
                 } else {
                     setError(response.error);
                 }
             } catch (error) {
+                console.error('Erreur lors du chargement des projets:', error); // Log de l'erreur
                 setError('Erreur lors du chargement des projets');
             } finally {
                 setLoading(false);
+                console.log('Loading finished'); // Log après que le chargement soit terminé
             }
         };
 
@@ -36,16 +41,24 @@ const ProjectManagement = () => {
 
     // Supprimer un projet
     const handleDelete = async (id) => {
+        console.log('Deleting project with ID:', id); // Log avant la suppression
         try {
             const success = await supprimerProjet(id);
+            console.log('Delete success:', success); // Log le succès de la suppression
+
             if (success) {
                 // Si la suppression réussie, on réactualise la liste des projets
                 setProjects(projects.filter(project => project.id !== id));
+                console.log('Project deleted. New list:', projects); // Log après suppression
             }
         } catch (error) {
+            console.error('Erreur lors de la suppression du projet:', error); // Log de l'erreur de suppression
             setError('Erreur lors de la suppression du projet');
         }
     };
+
+    console.log('Projects:', projects); // Log de la liste des projets avant le rendu
+    console.log('Filtered Projects:', filteredProjects); // Log de la liste filtrée des projets
 
     return (
         <div className="container my-5">
@@ -75,7 +88,10 @@ const ProjectManagement = () => {
                     className="form-select w-auto"
                     aria-label="Filtrer les projets"
                     value={filter}
-                    onChange={(e) => setFilter(e.target.value)}
+                    onChange={(e) => {
+                        console.log('Filter changed:', e.target.value); // Log du changement de filtre
+                        setFilter(e.target.value);
+                    }}
                 >
                     <option value="All">Tous</option>
                     <option value="Started">En Cours</option>
