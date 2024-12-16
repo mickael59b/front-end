@@ -43,26 +43,26 @@ const ProjectManagement = () => {
     const handleDelete = async (id) => {
         console.log('Deleting project with ID:', id); // Log avant la suppression
         try {
-            const success = await supprimerProjet(id); // Assurez-vous que l'ID est correct
-            console.log('Delete success:', success);
-
-            if (success.success) {
-                // Supprimer le projet localement sans avoir à faire une nouvelle requête
-                setProjects(prevProjects => {
-                    console.log('Previous projects before deletion:', prevProjects);
-
-                    // Filtrer le projet supprimé
-                    const updatedProjects = prevProjects.filter(project => project._id !== id);
-
-                    console.log('Updated projects after deletion:', updatedProjects);
-
-                    // Retourner la nouvelle liste des projets
-                    return updatedProjects;
-                });
-            }
+          const success = await supprimerProjet(id); // Assurez-vous que l'ID est correct
+          console.log('Delete success:', success);
+      
+          if (success.success) {
+            // Supprimer le projet localement sans avoir à faire une nouvelle requête à l'API
+            setProjects(prevProjects => {
+              console.log('Previous projects before deletion:', prevProjects);
+      
+              // Filtrer le projet supprimé
+              const updatedProjects = prevProjects.filter(project => project._id !== id);
+      
+              console.log('Updated projects after deletion:', updatedProjects);
+      
+              // Retourner la nouvelle liste des projets
+              return updatedProjects;
+            });
+          }
         } catch (error) {
-            console.error('Erreur lors de la suppression du projet:', error);
-            setError('Erreur lors de la suppression du projet');
+          console.error('Erreur lors de la suppression du projet:', error);
+          setError('Erreur lors de la suppression du projet');
         }
     };
 
