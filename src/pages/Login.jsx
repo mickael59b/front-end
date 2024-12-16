@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext'; // Importation de votre contexte Auth
@@ -118,7 +119,7 @@ const Login = () => {
                     </div>
                     <p className="text-muted mb-0">
                       <span>Don't have an account? </span>
-                      <a href="register" className="text-primary fw-semibold ms-1">Sign Up</a>
+                      <Link to="/register" className="text-primary fw-semibold ms-1">Sign Up</Link>
                     </p>
                   </div>
 
