@@ -46,8 +46,8 @@ const ProjectManagement = () => {
             const success = await supprimerProjet(id); // Assurez-vous que l'ID est correct
             console.log('Delete success:', success);
             if (success.success) {
-                // Si la suppression réussie, on réactualise la liste des projets
-                setProjects(projects.filter(project => project._id !== id)); // Utilisez _id au lieu de id
+                // Supprimer le projet localement sans avoir à faire une nouvelle requête
+                setProjects(prevProjects => prevProjects.filter(project => project._id !== id));
                 console.log('Project deleted. New list:', projects); // Log après suppression
             }
         } catch (error) {
