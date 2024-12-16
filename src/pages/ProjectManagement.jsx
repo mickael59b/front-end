@@ -49,9 +49,15 @@ const ProjectManagement = () => {
             if (success.success) {
                 // Supprimer le projet localement sans avoir à faire une nouvelle requête
                 setProjects(prevProjects => {
+                    // Log de l'état des projets avant la mise à jour
+                    console.log('Previous projects before deletion:', prevProjects);
+
                     // Filtrer le projet supprimé
                     const updatedProjects = prevProjects.filter(project => project._id !== id);
-                    console.log('Updated projects after delete:', updatedProjects);
+
+                    // Log de l'état après mise à jour
+                    console.log('Updated projects after deletion:', updatedProjects);
+
                     return updatedProjects; // Retourner la nouvelle liste des projets
                 });
             }
