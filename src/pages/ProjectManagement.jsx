@@ -12,22 +12,17 @@ const ProjectManagement = () => {
     // Charger les projets depuis l'API
     useEffect(() => {
         const fetchProjects = async () => {
-            console.log('Fetching projects...');
             try {
                 const response = await obtenirTousLesProjets();
-                console.log('Response:', response);
                 if (response && response.projects) {
-                    console.log('Projets récupérés:', response.projects);
                     setProjects(response.projects); // Mettre à jour l'état avec les projets
                 } else {
                     setError('Aucun projet trouvé dans la réponse.');
                 }
             } catch (error) {
-                console.error('Erreur lors du chargement des projets:', error);
                 setError('Erreur lors du chargement des projets');
             } finally {
                 setLoading(false);
-                console.log('Loading finished');
             }
         };
 
@@ -41,8 +36,6 @@ const ProjectManagement = () => {
 
     // Supprimer un projet
     const handleDelete = async (id) => {
-        console.log('Deleting project with ID:', id); // Log pour vérifier l'ID
-      
         try {
           const result = await supprimerProjet(id); // Appel à la fonction de suppression
       
@@ -51,24 +44,17 @@ const ProjectManagement = () => {
             setProjects((prevProjects) => {
               // Filtrer le projet supprimé de la liste
               const updatedProjects = prevProjects.filter(project => project._id !== id);
-              console.log('Updated projects after deletion:', updatedProjects);
               return updatedProjects;
             });
           } else {
             // Si la suppression échoue, afficher un message d'erreur
-            console.error('Failed to delete project:', result.message);
             setError(result.message); // Afficher le message d'erreur dans l'interface
           }
         } catch (error) {
           // En cas d'erreur inattendue
-          console.error('Error during project deletion:', error);
           setError('Une erreur est survenue pendant la suppression');
         }
     };
-
-    // Pour voir l'état avant et après chaque render
-    console.log('Projects:', projects);
-    console.log('Filtered Projects:', filteredProjects);
 
     return (
         <div className="container my-5">
@@ -98,10 +84,7 @@ const ProjectManagement = () => {
                     className="form-select w-auto"
                     aria-label="Filtrer les projets"
                     value={filter}
-                    onChange={(e) => {
-                        console.log('Filter changed:', e.target.value); // Log du changement de filtre
-                        setFilter(e.target.value);
-                    }}
+                    onChange={(e) => setFilter(e.target.value)}
                 >
                     <option value="All">Tous</option>
                     <option value="Started">En Cours</option>
