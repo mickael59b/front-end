@@ -58,7 +58,8 @@ const ProjectManagement = () => {
                     // Log de l'état après mise à jour
                     console.log('Updated projects after deletion:', updatedProjects);
 
-                    return updatedProjects; // Retourner la nouvelle liste des projets
+                    // Retourner la nouvelle liste des projets
+                    return updatedProjects;
                 });
             }
         } catch (error) {
@@ -67,8 +68,9 @@ const ProjectManagement = () => {
         }
     };
 
-    console.log('Projects:', projects); // Log de la liste des projets avant le rendu
-    console.log('Filtered Projects:', filteredProjects); // Log de la liste filtrée des projets
+    // Pour voir l'état avant et après chaque render
+    console.log('Projects:', projects);
+    console.log('Filtered Projects:', filteredProjects);
 
     return (
         <div className="container my-5">
