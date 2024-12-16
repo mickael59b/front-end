@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { obtenirTousLesProjets, supprimerProjet } from '../services/apiProjet';  // Assurez-vous que ces fonctions sont définies correctement dans apiProjet.js
+import { obtenirTousLesProjets, supprimerProjet } from '../services/apiProjets';  // Assurez-vous que ces fonctions sont définies correctement dans apiProjet.js
 import Spinner from 'react-bootstrap/Spinner'; // Pour l'indicateur de chargement
 import { Button, Table, Alert, Form } from 'react-bootstrap';  // Bootstrap components
 
