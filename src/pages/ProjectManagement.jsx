@@ -18,7 +18,7 @@ const ProjectManagement = () => {
                 console.log('Response:', response);
                 if (response && response.projects) {
                     console.log('Projets récupérés:', response.projects);
-                    setProjects(response.projects); // Mettez à jour l'état avec les projets
+                    setProjects(response.projects); // Mettre à jour l'état avec les projets
                 } else {
                     setError('Aucun projet trouvé dans la réponse.');
                 }
@@ -49,13 +49,11 @@ const ProjectManagement = () => {
             if (success.success) {
                 // Supprimer le projet localement sans avoir à faire une nouvelle requête
                 setProjects(prevProjects => {
-                    // Log de l'état des projets avant la mise à jour
                     console.log('Previous projects before deletion:', prevProjects);
 
                     // Filtrer le projet supprimé
                     const updatedProjects = prevProjects.filter(project => project._id !== id);
 
-                    // Log de l'état après mise à jour
                     console.log('Updated projects after deletion:', updatedProjects);
 
                     // Retourner la nouvelle liste des projets
