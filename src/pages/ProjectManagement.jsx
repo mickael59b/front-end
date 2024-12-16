@@ -15,12 +15,14 @@ const ProjectManagement = () => {
             console.log('Fetching projects...'); // Log avant d'envoyer la requête
             try {
                 const response = await obtenirTousLesProjets();
-                console.log('Response:', response); // Log la réponse de l'API
+                console.log('Response:', response); // Log de la réponse entière
 
-                if (response.success) {
-                    setProjects(response.projects);
+                if (response && response.projects) {
+                    // Vérifiez la structure de la réponse pour voir où sont les projets
+                    console.log('Projets récupérés:', response.projects);
+                    setProjects(response.projects); // Mettez à jour l'état avec les projets
                 } else {
-                    setError(response.error);
+                    setError('Aucun projet trouvé dans la réponse.');
                 }
             } catch (error) {
                 console.error('Erreur lors du chargement des projets:', error); // Log de l'erreur
@@ -44,7 +46,7 @@ const ProjectManagement = () => {
         console.log('Deleting project with ID:', id); // Log avant la suppression
         try {
             const success = await supprimerProjet(id);
-            console.log('Delete success:', success); // Log le succès de la suppression
+            console.log('Delete success:', success); // Log du succès de la suppression
 
             if (success) {
                 // Si la suppression réussie, on réactualise la liste des projets
