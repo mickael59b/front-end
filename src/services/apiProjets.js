@@ -70,8 +70,16 @@ export const supprimerProjet = async (id) => {
     const response = await axios.delete(`${API_BASE_URL}/${id}`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     });
-    return response.status === 200;
+
+    // Si la suppression réussit, on renvoie true
+    if (response.status === 200) {
+      return { success: true };
+    }
+
+    // Si ce n'est pas un code 200, on renvoie false
+    return { success: false, message: 'Échec de la suppression' };
   } catch (error) {
-    return handleError(error);
+    console.error('Erreur lors de la suppression :', error);
+    return { success: false, message: 'Erreur réseau ou serveur' };
   }
 };

@@ -41,32 +41,28 @@ const ProjectManagement = () => {
 
     // Supprimer un projet
     const handleDelete = async (id) => {
-        console.log('Deleting project with ID:', id); // Log avant la suppression
+        console.log('Deleting project with ID:', id); // Log pour vérifier l'ID
+      
         try {
-          // Appel de la fonction pour supprimer le projet via l'API
-          const success = await supprimerProjet(id); // Assurez-vous que l'ID est correct
+          const result = await supprimerProjet(id); // Appel à la fonction de suppression
       
-          // Si la suppression est un succès
-          if (success.success) {
-            // Mettre à jour l'état local des projets
-            setProjects(prevProjects => {
-              console.log('Previous projects before deletion:', prevProjects);
-      
-              // Filtrer le projet supprimé pour ne pas l'afficher
+          if (result.success) {
+            // Si la suppression est réussie, on met à jour l'état des projets
+            setProjects((prevProjects) => {
+              // Filtrer le projet supprimé de la liste
               const updatedProjects = prevProjects.filter(project => project._id !== id);
-      
               console.log('Updated projects after deletion:', updatedProjects);
-      
-              // Retourner la nouvelle liste de projets, qui exclut celui qui a été supprimé
               return updatedProjects;
             });
           } else {
-            // En cas d'erreur dans la suppression
-            console.error('Failed to delete project');
+            // Si la suppression échoue, afficher un message d'erreur
+            console.error('Failed to delete project:', result.message);
+            setError(result.message); // Afficher le message d'erreur dans l'interface
           }
         } catch (error) {
+          // En cas d'erreur inattendue
           console.error('Error during project deletion:', error);
-          setError('Erreur lors de la suppression du projet');
+          setError('Une erreur est survenue pendant la suppression');
         }
     };
 
