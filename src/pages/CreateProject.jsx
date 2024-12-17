@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { creerProjet, uploaderImage } from '../services/apiProjet'; // Importer les fonctions nécessaires
+import { creerProjet, uploaderImage } from '../services/apiProjets'; // Importer les fonctions nécessaires
 
 const CreateProject = () => {
   const [projectData, setProjectData] = useState({
