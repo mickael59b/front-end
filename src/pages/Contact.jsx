@@ -2,12 +2,10 @@ import React, { useRef, useState } from 'react';
 import '../assets/css/contact.css';
 import Carte_map from '../assets/images/contact-bg.png';
 import { Helmet } from 'react-helmet';
-import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
 import Message from '../components/Message'; // Composant pour afficher erreurs/succès
 
 const Contact = () => {
-    const recaptchaRef = useRef(null);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -17,8 +15,6 @@ const Contact = () => {
     const [formError, setFormError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formSuccess, setFormSuccess] = useState(false);
-
-    const RECAPTCHA_SITE_KEY = "6LdVeAspAAAAAAhQb8mrSQAuuMtsW2HnLVkW_WJZ"; // Clé publique intégrée directement
 
     // Gestion des changements dans les champs du formulaire
     const handleInputChange = (e) => {
@@ -37,37 +33,23 @@ const Contact = () => {
         const { firstName, lastName, email, message } = formData;
 
         if (!firstName.trim() || !lastName.trim() || !email.trim() || !message.trim()) {
-            console.log("Validation error: All fields are required.");
             return "Tous les champs sont obligatoires.";
         }
         if (!validateEmail(email)) {
-            console.log("Validation error: Invalid email.");
             return "L'email fourni est invalide.";
         }
         if (message.length < 10) {
-            console.log("Validation error: Message too short.");
             return "Votre message doit contenir au moins 10 caractères.";
         }
-        console.log("Form validation passed."); // Log successful validation
         return '';
     };
 
     // Envoi du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form submission started."); // Log submission start
-        const recaptchaValue = recaptchaRef.current.getValue();
-        console.log(`reCAPTCHA value: ${recaptchaValue}`); // Log reCAPTCHA value
-
-        if (!recaptchaValue) {
-            console.log("reCAPTCHA validation failed."); // Log reCAPTCHA error
-            setFormError("Veuillez compléter le reCAPTCHA.");
-            return;
-        }
 
         const validationError = validateForm();
         if (validationError) {
-            console.log(`Form validation error: ${validationError}`); // Log validation error
             setFormError(validationError);
             return;
         }
@@ -78,7 +60,6 @@ const Contact = () => {
             console.log("Sending form data to server...", formData); // Log data being sent
             const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/contact', {
                 ...formData,
-                recaptchaToken: recaptchaValue,
             });
 
             console.log("Server response:", response); // Log server response
@@ -87,7 +68,6 @@ const Contact = () => {
                 console.log("Form submission successful."); // Log success
                 setFormSuccess(true);
                 setFormData({ firstName: '', lastName: '', email: '', message: '' });
-                recaptchaRef.current.reset();
                 setFormError('');
                 setTimeout(() => setFormSuccess(false), 3000);
             } else {
@@ -181,13 +161,6 @@ const Contact = () => {
                                 </div>
 
                                 <div className="d-flex justify-content-between align-items-center mb-3">
-                                    <div className="recaptcha-container">
-                                        <ReCAPTCHA
-                                            ref={recaptchaRef}
-                                            sitekey={RECAPTCHA_SITE_KEY} // Clé publique intégrée directement
-                                            disabled={isSubmitting}
-                                        />
-                                    </div>
                                     <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
                                         {isSubmitting ? 'Envoi en cours...' : 'Envoyer'}
                                     </button>
