@@ -1,67 +1,66 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { obtenirTousLesProjets } from "../services/apiProjets"; // Importation de la fonction pour récupérer les projets
-import "../assets/css/projets.css"; // CSS pour la mise en forme
+import { Link } from "react-router-dom";  // Importation de Link de React Router
+import { obtenirTousLesProjets } from "../services/apiProjets"; 
+import "../assets/css/projets.css";
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const [categories, setCategories] = useState([]);
   const [activeFilter, setActiveFilter] = useState("*");
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); // Page courante
-  const [projectsPerPage] = useState(9); // Nombre de projets par page
+  const [currentPage, setCurrentPage] = useState(1);
+  const [projectsPerPage] = useState(9);
 
-  // Récupérer les projets et les catégories
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const projectsData = await obtenirTousLesProjets();
-        console.log("Projets récupérés :", projectsData); // Vérification des données
-        setProjects(projectsData.projects); // Accédez à la clé `projects`
-        
-        // Extraction des catégories uniques
-        const uniqueCategories = [
-          ...new Set(
-            projectsData.projects
-              .map((project) => project.category)
-              .filter((category) => category) // Ignore les catégories nulles
-          ),
-        ];
-        setCategories(uniqueCategories);
+        if (projectsData && Array.isArray(projectsData.projects)) {
+          setProjects(projectsData.projects);
+          const uniqueCategories = [
+            ...new Set(
+              projectsData.projects
+                .map((project) => project.category?.trim())
+                .filter((category) => category)
+            ),
+          ];
+          setCategories(uniqueCategories);
+        } else {
+          console.error("Structure de la réponse incorrecte.");
+          setProjects([]);
+        }
       } catch (error) {
         console.error("Erreur lors de la récupération des projets :", error.message);
-        setProjects([]); // Gère les erreurs proprement
+        setProjects([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchProjects();
   }, []);
 
-  // Filtrage des projets
   const filteredProjects = useMemo(() => {
-    return activeFilter === "*"
-      ? projects
-      : projects.filter((project) => project.category === activeFilter);
+    if (activeFilter === "*") {
+      return projects;
+    }
+    return projects.filter((project) => project.category === activeFilter);
   }, [projects, activeFilter]);
 
-  // Calcul des projets à afficher pour la page courante
   const indexOfLastProject = currentPage * projectsPerPage;
   const indexOfFirstProject = indexOfLastProject - projectsPerPage;
   const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
 
-  // Calcul du nombre total de pages
   const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
 
-  // Gestion des filtres
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
-    setCurrentPage(1); // Réinitialiser à la première page lors d'un changement de filtre
+    setCurrentPage(1);
   };
 
-  // Gestion du changement de page
   const handlePageChange = (page) => {
-    setCurrentPage(page);
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
   };
 
   return (
@@ -104,6 +103,10 @@ const Projects = () => {
                   <h5>{project.name}</h5>
                   <p>{project.description}</p>
                   <span className="category">{project.category}</span>
+                  {/* Lien vers la page des détails du projet */}
+                  <Link to={`/projects/${project.id}`} className="btn btn-primary">
+                    Voir les détails
+                  </Link>
                 </div>
               </div>
             ))
@@ -112,18 +115,14 @@ const Projects = () => {
           )}
         </div>
 
-        {/* Pagination */}
         <div className="pagination">
           <ul className="pagination-list list-inline">
-            {/* Page précédente */}
             <li
               className={`page-item ${currentPage === 1 ? "disabled" : ""}`}
               onClick={() => handlePageChange(currentPage - 1)}
             >
               <button className="page-link">Précédent</button>
             </li>
-
-            {/* Numéros de page */}
             {[...Array(totalPages)].map((_, index) => (
               <li
                 key={index}
@@ -133,8 +132,6 @@ const Projects = () => {
                 <button className="page-link">{index + 1}</button>
               </li>
             ))}
-
-            {/* Page suivante */}
             <li
               className={`page-item ${currentPage === totalPages ? "disabled" : ""}`}
               onClick={() => handlePageChange(currentPage + 1)}
