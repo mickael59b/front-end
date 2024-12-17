@@ -23,7 +23,12 @@ export const obtenirTousLesProjets = async () => {
     const response = await axios.get(API_BASE_URL, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
-    return { success: true, projects: response.data };
+    // Vérifier que la réponse contient bien un tableau de projets
+    if (Array.isArray(response.data)) {
+      return { success: true, projects: response.data };
+    } else {
+      return { success: false, error: 'Les projets ne sont pas sous forme de tableau.' };
+    }
   } catch (error) {
     return handleError(error);
   }
@@ -36,63 +41,6 @@ export const obtenirProjetParId = async (id) => {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
     return { success: true, project: response.data };
-  } catch (error) {
-    return handleError(error);
-  }
-};
-
-export const creerProjet = async (projectData, imageFile) => {
-  try {
-    let imageInfo = null;
-
-    // Si une image a été téléchargée, on enregistre son URL et son nom
-    if (imageFile) {
-      const uploadResponse = await uploaderImage(imageFile);
-      if (!uploadResponse.success) {
-        return { success: false, error: uploadResponse.error };
-      }
-      imageInfo = {
-        imageUrl: uploadResponse.imageUrl,
-        imageName: uploadResponse.imageName,
-      };
-    }
-
-    // Inclure l'URL et le nom de l'image dans les données du projet
-    const projectWithImage = {
-      ...projectData,
-      imageUrl: imageInfo ? imageInfo.imageUrl : null,
-      imageName: imageInfo ? imageInfo.imageName : null,
-    };
-
-    const response = await axios.post(API_BASE_URL, projectWithImage, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    });
-
-    return { success: true, project: response.data };
-  } catch (error) {
-    return handleError(error);
-  }
-};
-
-// Mettre à jour un projet
-export const mettreAJourProjet = async (id, projectData) => {
-  try {
-    const response = await axios.put(`${API_BASE_URL}/${id}`, projectData, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    });
-    return { success: true, project: response.data };
-  } catch (error) {
-    return handleError(error);
-  }
-};
-
-// Supprimer un projet
-export const supprimerProjet = async (id) => {
-  try {
-    const response = await axios.delete(`${API_BASE_URL}/${id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    });
-    return { success: true, message: 'Projet supprimé avec succès' };
   } catch (error) {
     return handleError(error);
   }
