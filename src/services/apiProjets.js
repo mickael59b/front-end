@@ -17,6 +17,39 @@ const handleError = (error) => {
   }
 };
 
+export const creerProjet = async (projectData, imageFile) => {
+  try {
+    let imageInfo = null;
+
+    // Si une image a été téléchargée, on enregistre son URL et son nom
+    if (imageFile) {
+      const uploadResponse = await uploaderImage(imageFile);
+      if (!uploadResponse.success) {
+        return { success: false, error: uploadResponse.error };
+      }
+      imageInfo = {
+        imageUrl: uploadResponse.imageUrl,
+        imageName: uploadResponse.imageName,
+      };
+    }
+
+    // Inclure l'URL et le nom de l'image dans les données du projet
+    const projectWithImage = {
+      ...projectData,
+      imageUrl: imageInfo ? imageInfo.imageUrl : null,
+      imageName: imageInfo ? imageInfo.imageName : null,
+    };
+
+    const response = await axios.post(API_BASE_URL, projectWithImage, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+
+    return { success: true, project: response.data };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 export const supprimerProjet = async (id) => {
   try {
     const response = await axios.delete(`${API_BASE_URL}/${id}`, {
