@@ -27,3 +27,12 @@ a {
   font-size: 1.1rem;
   line-height: 1.8;
 }
+/* Image carte */
+.carte_img {
+  max-width: 100%; /* Assurez-vous que l'image occupe toute la largeur de son conteneur */
+  height: auto; /* Préserve les proportions de l'image */
+  border-radius: 8px; /* Ajoute un effet d'arrondi aux coins de l'image */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre légère autour de l'image */
+  transition: transform 0.3s ease-in-out; /* Effet de transition pour l'effet hover */
+  margin-top: 2rem; /* Espace entre le texte et l'image */
+}
