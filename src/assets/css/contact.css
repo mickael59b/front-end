@@ -1,20 +1,9 @@
-.lists{
-    background-image: url('../images/contact-bg.png'); /* Testez avec un chemin absolu */
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover; /* Ajuste l'image pour couvrir toute la zone */
-    position: relative;
-    height: 290px; /* Ajustez la hauteur comme nécessaire */
-    width: 100%; /* Assurez-vous que la largeur est correcte */
-}
-
-.lists:before {
-    content: "";
-    background: rgba(255, 255, 255, 0.3); /* Superposition semi-transparente */
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 1; /* Assurez-vous que la superposition est au-dessus de l'image */
+/* Image carte */
+.carte_img {
+    max-width: 100%; /* Assurez-vous que l'image occupe toute la largeur de son conteneur */
+    height: auto; /* Préserve les proportions de l'image */
+    border-radius: 8px; /* Ajoute un effet d'arrondi aux coins de l'image */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Ombre légère autour de l'image */
+    transition: transform 0.3s ease-in-out; /* Effet de transition pour l'effet hover */
+    margin-top: 2rem; /* Espace entre le texte et l'image */
 }
