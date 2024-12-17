@@ -41,12 +41,33 @@ export const obtenirProjetParId = async (id) => {
   }
 };
 
-// Créer un projet
-export const creerProjet = async (projectData) => {
+export const creerProjet = async (projectData, imageFile) => {
   try {
-    const response = await axios.post(API_BASE_URL, projectData, {
+    let imageInfo = null;
+
+    // Si une image a été téléchargée, on enregistre son URL et son nom
+    if (imageFile) {
+      const uploadResponse = await uploaderImage(imageFile);
+      if (!uploadResponse.success) {
+        return { success: false, error: uploadResponse.error };
+      }
+      imageInfo = {
+        imageUrl: uploadResponse.imageUrl,
+        imageName: uploadResponse.imageName,
+      };
+    }
+
+    // Inclure l'URL et le nom de l'image dans les données du projet
+    const projectWithImage = {
+      ...projectData,
+      imageUrl: imageInfo ? imageInfo.imageUrl : null,
+      imageName: imageInfo ? imageInfo.imageName : null,
+    };
+
+    const response = await axios.post(API_BASE_URL, projectWithImage, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
+
     return { success: true, project: response.data };
   } catch (error) {
     return handleError(error);
@@ -79,6 +100,16 @@ export const supprimerProjet = async (id) => {
 
 // Fonction pour uploader une image via l'API
 export const uploaderImage = async (file) => {
+  // Vérification de la taille du fichier (par exemple, 5 Mo max)
+  if (file.size > 5 * 1024 * 1024) {
+    return { success: false, error: 'Le fichier est trop grand. Taille maximale: 5 Mo' };
+  }
+
+  // Vérification du type de fichier (ici, une image)
+  if (!file.type.startsWith('image/')) {
+    return { success: false, error: 'Le fichier doit être une image.' };
+  }
+
   const formData = new FormData();
   formData.append('image', file);
 
@@ -89,7 +120,8 @@ export const uploaderImage = async (file) => {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
-    return { success: true, imageUrl: response.data.fileUrl }; // Retourne l'URL de l'image téléchargée
+    // Renvoie l'URL et le nom du fichier téléchargé
+    return { success: true, imageUrl: response.data.fileUrl, imageName: response.data.fileName };
   } catch (error) {
     return handleError(error);
   }
