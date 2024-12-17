@@ -3,13 +3,12 @@ import { obtenirTousLesProjets } from '../services/apiProjets'; // Assurez-vous 
 import { Link } from 'react-router-dom'; // Pour les liens vers les détails des projets
 
 const ProjectsPage = () => {
-  const [projects, setProjects] = useState([]);  // Projets de l'API
-  const [filteredProjects, setFilteredProjects] = useState([]);  // Projets filtrés
-  const [categories, setCategories] = useState([]);  // Catégories pour le filtrage
-  const [loading, setLoading] = useState(true);  // Indicateur de chargement
-  const [selectedCategory, setSelectedCategory] = useState('All');  // Catégorie sélectionnée pour filtrer
+  const [projects, setProjects] = useState([]);
+  const [filteredProjects, setFilteredProjects] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('All');
 
-  // Fonction pour filtrer les projets selon la catégorie
   const filterProjectsByCategory = (category) => {
     if (category === 'All') {
       setFilteredProjects(projects);
@@ -20,21 +19,18 @@ const ProjectsPage = () => {
   };
 
   useEffect(() => {
-    // Récupérer les projets depuis l'API
     const fetchProjects = async () => {
       setLoading(true);
       const response = await obtenirTousLesProjets();
-      
       if (response.success && Array.isArray(response.projects)) {
         setProjects(response.projects);
-        setFilteredProjects(response.projects);  // Par défaut, afficher tous les projets
+        setFilteredProjects(response.projects);
       } else {
         console.error('Erreur de récupération des projets:', response.error);
       }
       setLoading(false);
     };
 
-    // Récupérer les catégories disponibles pour filtrer
     const fetchCategories = async () => {
       try {
         const response = await fetch('https://back-end-api-gfl0.onrender.com/api/projects/categories');
@@ -51,7 +47,6 @@ const ProjectsPage = () => {
     fetchCategories();
   }, []);
 
-  // Vérifier si les projets sont encore en cours de chargement
   if (loading) {
     return <div>Chargement des projets...</div>;
   }
@@ -60,22 +55,31 @@ const ProjectsPage = () => {
     <div className="container">
       <h1>Nos Projets</h1>
       
-      {/* Filtre par catégorie */}
-      <div className="category-filter">
-        <select 
-          value={selectedCategory} 
-          onChange={(e) => {
-            setSelectedCategory(e.target.value);
-            filterProjectsByCategory(e.target.value);
-          }}
-        >
-          {categories.map((category, index) => (
-            <option key={index} value={category}>{category}</option>
-          ))}
-        </select>
+      {/* Filtre par catégorie avec un style inspiré */}
+      <div className="row align-items-center mb-4">
+        <div className="col-lg-7 portfolio-info">
+          <h3>Explorez nos Projets</h3>
+          <p>Découvrez une variété de projets adaptés à différentes catégories</p>
+        </div>
+        <div className="col-lg-5 text-center text-lg-end">
+          <ul className="portfolio-filters isotope-filters">
+            {categories.map((category, index) => (
+              <li
+                key={index}
+                className={category === selectedCategory ? 'filter-active' : ''}
+                onClick={() => {
+                  setSelectedCategory(category);
+                  filterProjectsByCategory(category);
+                }}
+              >
+                {category}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
-      {/* Affichage des projets */}
+      {/* Liste des projets */}
       <div className="row">
         {filteredProjects.length > 0 ? (
           filteredProjects.map((project) => (
