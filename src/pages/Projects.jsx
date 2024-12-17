@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";  // Pour créer un lien vers la page des détails d'un projet
-import { obtenirTousLesProjets } from "../services/apiproject";  // Import de la fonction pour obtenir les projets
+import { obtenirTousLesProjets } from "../services/apiProjets";  // Import de la fonction pour obtenir les projets
 import "../assets/css/projets.css";  // Assurez-vous d'inclure votre CSS pour la mise en forme
 
 const Projects = () => {
