@@ -63,9 +63,9 @@ const CreateProject = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     let imageUrl = projectData.image;
-
+  
     // Upload de l'image si elle existe
     if (projectData.image) {
       try {
@@ -75,12 +75,12 @@ const CreateProject = () => {
         return;
       }
     }
-
+  
     const response = await creerProjet({
       ...projectData,
-      imageUrl: imageUrl,  // Inclure l'URL de l'image dans le projet
+      image: projectData.image,  // Assurez-vous que l'image est incluse dans les données envoyées
     });
-
+  
     if (response.success) {
       alert('Projet créé avec succès !');
       setProjectData({
