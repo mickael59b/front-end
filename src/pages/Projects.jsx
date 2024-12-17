@@ -3,11 +3,11 @@ import { obtenirTousLesProjets } from '../services/apiProjets'; // Assurez-vous 
 import { Link } from 'react-router-dom'; // Pour les liens vers les détails des projets
 
 const ProjectsPage = () => {
-  const [projects, setProjects] = useState([]);
-  const [filteredProjects, setFilteredProjects] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [projects, setProjects] = useState([]);  // Projets de l'API
+  const [filteredProjects, setFilteredProjects] = useState([]);  // Projets filtrés
+  const [categories, setCategories] = useState([]);  // Catégories pour le filtrage
+  const [loading, setLoading] = useState(true);  // Indicateur de chargement
+  const [selectedCategory, setSelectedCategory] = useState('All');  // Catégorie sélectionnée pour filtrer
 
   // Fonction pour filtrer les projets selon la catégorie
   const filterProjectsByCategory = (category) => {
@@ -107,4 +107,3 @@ const ProjectsPage = () => {
 };
 
 export default ProjectsPage;
-
