@@ -52,61 +52,63 @@ const ProjectsPage = () => {
   }
 
   return (
-    <div className="container">
-      <h1>Nos Projets</h1>
-      
-      {/* Filtre par catégorie avec un style inspiré */}
-      <div className="row align-items-center mb-4">
-        <div className="col-lg-7 portfolio-info">
-          <h3>Explorez nos Projets</h3>
-          <p>Découvrez une variété de projets adaptés à différentes catégories</p>
-        </div>
-        <div className="col-lg-5 text-center text-lg-end">
-          <ul className="portfolio-filters isotope-filters">
-            {categories.map((category, index) => (
-              <li
-                key={index}
-                className={category === selectedCategory ? 'filter-active' : ''}
-                onClick={() => {
-                  setSelectedCategory(category);
-                  filterProjectsByCategory(category);
-                }}
-              >
-                {category}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+    <section id="projets" className="py-5">
+      <div className="container">
+        <h1>Nos Projets</h1>
 
-      {/* Liste des projets */}
-      <div className="row">
-        {filteredProjects.length > 0 ? (
-          filteredProjects.map((project) => (
-            <div className="col-md-4" key={project._id}>
-              <div className="card">
-                {project.imageUrl && (
-                  <img
-                    src={project.imageUrl}
-                    alt={project.title}
-                    className="card-img-top"
-                  />
-                )}
-                <div className="card-body">
-                  <h5 className="card-title">{project.title}</h5>
-                  <p className="card-text">{project.description}</p>
-                  <Link to={`/projects/${project._id}`} className="btn btn-primary">
-                    Voir les détails
-                  </Link>
+        {/* Filtre par catégorie avec un style inspiré */}
+        <div className="row align-items-center mb-4">
+          <div className="col-lg-7 portfolio-info">
+            <h3>Explorez nos Projets</h3>
+            <p>Découvrez une variété de projets adaptés à différentes catégories</p>
+          </div>
+          <div className="col-lg-5 text-center text-lg-end">
+            <ul className="portfolio-filters isotope-filters">
+              {categories.map((category, index) => (
+                <li
+                  key={index}
+                  className={category === selectedCategory ? 'filter-active' : ''}
+                  onClick={() => {
+                    setSelectedCategory(category);
+                    filterProjectsByCategory(category);
+                  }}
+                >
+                  {category}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        {/* Liste des projets */}
+        <div className="row">
+          {filteredProjects.length > 0 ? (
+            filteredProjects.map((project) => (
+              <div className="col-md-4" key={project._id}>
+                <div className="card">
+                  {project.imageUrl && (
+                    <img
+                      src={project.imageUrl}
+                      alt={project.title}
+                      className="card-img-top"
+                    />
+                  )}
+                  <div className="card-body">
+                    <h5 className="card-title">{project.title}</h5>
+                    <p className="card-text">{project.description}</p>
+                    <Link to={`/projects/${project._id}`} className="btn btn-primary">
+                      Voir les détails
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <div>Aucun projet trouvé.</div>
-        )}
+            ))
+          ) : (
+            <div>Aucun projet trouvé.</div>
+          )}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
