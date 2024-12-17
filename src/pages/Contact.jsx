@@ -4,7 +4,7 @@ import { Helmet } from 'react-helmet';
 import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
 import validator from 'validator';
-import Message from '../components/Message'; // Votre composant Message pour afficher les erreurs et succès
+import Message from '../components/Message'; // Composant pour afficher erreurs/succès
 
 const Contact = () => {
     const recaptchaRef = useRef(null);
@@ -24,17 +24,21 @@ const Contact = () => {
         setFormData({ ...formData, [id]: value });
     };
 
-    // Validation de l'email avec la bibliothèque 'validator'
+    // Validation de l'email
     const validateEmail = (email) => validator.isEmail(email);
 
     // Validation générale du formulaire
     const validateForm = () => {
         const { firstName, lastName, email, message } = formData;
-        if (!firstName || !lastName || !email || !message) {
+
+        if (!firstName.trim() || !lastName.trim() || !email.trim() || !message.trim()) {
             return "Tous les champs sont obligatoires.";
         }
         if (!validateEmail(email)) {
             return "L'email fourni est invalide.";
+        }
+        if (message.length < 10) {
+            return "Votre message doit contenir au moins 10 caractères.";
         }
         return '';
     };
@@ -44,7 +48,6 @@ const Contact = () => {
         e.preventDefault();
         const recaptchaValue = recaptchaRef.current.getValue();
 
-        // Vérification de la validation reCAPTCHA
         if (!recaptchaValue) {
             setFormError("Veuillez compléter le reCAPTCHA.");
             return;
@@ -69,17 +72,14 @@ const Contact = () => {
                 setFormData({ firstName: '', lastName: '', email: '', message: '' });
                 recaptchaRef.current.reset();
                 setFormError('');
-                setTimeout(() => setFormSuccess(false), 3000); 
+                setTimeout(() => setFormSuccess(false), 3000);
             } else {
                 setFormError('Erreur lors de l\'envoi du formulaire.');
             }
         } catch (error) {
-            if (error.response) {
-                setFormError(error.response.data.message || 'Une erreur est survenue. Veuillez réessayer plus tard.');
-            } else {
-                setFormError('Erreur réseau. Veuillez vérifier votre connexion.');
-            }
-            console.error('Erreur lors de l\'envoi:', error);
+            setFormError(
+                error.response?.data.message || 'Une erreur est survenue. Veuillez réessayer plus tard.'
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -89,7 +89,10 @@ const Contact = () => {
         <>
             <Helmet>
                 <title>Contact - Mon Portfolio</title>
-                <meta name="description" content="Contactez-moi pour discuter de votre projet et découvrir comment je peux vous aider à faire briller votre marque." />
+                <meta
+                    name="description"
+                    content="Contactez-moi pour discuter de votre projet et découvrir comment je peux vous aider à faire briller votre marque."
+                />
             </Helmet>
 
             <div id="contact" className="py-5">
@@ -98,9 +101,11 @@ const Contact = () => {
                         <div className="col-lg-6 mb-4">
                             <div className="heading pb-5">
                                 <h2>Let's level up your brand, together</h2>
-                                <p>Contactez-moi pour discuter de votre projet et découvrir comment je peux vous aider à faire briller votre marque.</p>
+                                <p>
+                                    Contactez-moi pour discuter de votre projet et découvrir comment je peux
+                                    vous aider à faire briller votre marque.
+                                </p>
                             </div>
-                            <div className='lists'></div>
                         </div>
 
                         <div className="col-lg-6 mb-4">
@@ -113,7 +118,7 @@ const Contact = () => {
                                             id="firstName"
                                             value={formData.firstName}
                                             onChange={handleInputChange}
-                                            className="form-control"
+                                            className={`form-control ${formError && formError.includes('Prénom') ? 'is-invalid' : ''}`}
                                             required
                                         />
                                     </div>
@@ -124,7 +129,7 @@ const Contact = () => {
                                             id="lastName"
                                             value={formData.lastName}
                                             onChange={handleInputChange}
-                                            className="form-control"
+                                            className={`form-control ${formError && formError.includes('Nom') ? 'is-invalid' : ''}`}
                                             required
                                         />
                                     </div>
@@ -137,9 +142,12 @@ const Contact = () => {
                                         id="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        className="form-control"
+                                        className={`form-control ${formError && formError.includes('email') ? 'is-invalid' : ''}`}
                                         required
                                     />
+                                    {formError && formError.includes('email') && (
+                                        <div className="invalid-feedback">Veuillez fournir une adresse email valide.</div>
+                                    )}
                                 </div>
 
                                 <div className="mb-3">
@@ -148,10 +156,13 @@ const Contact = () => {
                                         id="message"
                                         value={formData.message}
                                         onChange={handleInputChange}
-                                        className="form-control"
+                                        className={`form-control ${formError && formError.includes('message') ? 'is-invalid' : ''}`}
                                         rows="5"
                                         required
                                     />
+                                    {formError && formError.includes('message') && (
+                                        <div className="invalid-feedback">Votre message doit contenir au moins 10 caractères.</div>
+                                    )}
                                 </div>
 
                                 <div className="d-flex justify-content-between align-items-center mb-3">
@@ -159,6 +170,7 @@ const Contact = () => {
                                         <ReCAPTCHA
                                             ref={recaptchaRef}
                                             sitekey="6LdVeAspAAAAAAhQb8mrSQAuuMtsW2HnLVkW_WJZ"
+                                            disabled={isSubmitting}
                                         />
                                     </div>
                                     <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
@@ -166,7 +178,7 @@ const Contact = () => {
                                     </button>
                                 </div>
 
-                                {/* Affichage des messages d'erreur et succès */}
+                                {/* Messages d'erreur et de succès */}
                                 {formError && <Message type="danger" message={formError} />}
                                 {formSuccess && <Message type="success" message="Votre message a été envoyé avec succès !" />}
                             </form>
