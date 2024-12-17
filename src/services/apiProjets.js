@@ -67,10 +67,12 @@ export const obtenirTousLesProjets = async () => {
     const response = await axios.get(API_BASE_URL, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
     });
-    // Vérifier que la réponse contient bien un tableau de projets
+    
+    // Vérifier si la réponse est un tableau
     if (Array.isArray(response.data)) {
       return { success: true, projects: response.data };
     } else {
+      console.error('Les projets ne sont pas sous forme de tableau:', response.data);
       return { success: false, error: 'Les projets ne sont pas sous forme de tableau.' };
     }
   } catch (error) {
