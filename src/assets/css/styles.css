@@ -27,3 +27,8 @@ a {
   font-size: 1.1rem;
   line-height: 1.8;
 }
+.portfolio-filters {
+  padding: 0;
+  margin: 0 auto 20px auto;
+  list-style: none;
+}
