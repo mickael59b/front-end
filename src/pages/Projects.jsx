@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";  // Importation de Link de React Router
-import { obtenirTousLesProjets } from "../services/apiProjets"; 
-import "../assets/css/projets.css";
+import { Link } from "react-router-dom";  // Pour créer un lien vers la page des détails d'un projet
+import { obtenirTousLesProjets } from "../services/apiproject";  // Import de la fonction pour obtenir les projets
+import "../assets/css/projets.css";  // Assurez-vous d'inclure votre CSS pour la mise en forme
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -11,56 +11,38 @@ const Projects = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [projectsPerPage] = useState(9);
 
+  // Récupérer les projets et les catégories
   useEffect(() => {
     const fetchProjects = async () => {
-      try {
-        const projectsData = await obtenirTousLesProjets();
-        if (projectsData && Array.isArray(projectsData.projects)) {
-          setProjects(projectsData.projects);
-          const uniqueCategories = [
-            ...new Set(
-              projectsData.projects
-                .map((project) => project.category?.trim())
-                .filter((category) => category)
-            ),
-          ];
-          setCategories(uniqueCategories);
-        } else {
-          console.error("Structure de la réponse incorrecte.");
-          setProjects([]);
-        }
-      } catch (error) {
-        console.error("Erreur lors de la récupération des projets :", error.message);
-        setProjects([]);
-      } finally {
-        setLoading(false);
+      setLoading(true);
+      const response = await obtenirTousLesProjets();  // Appel de l'API pour obtenir les projets
+      if (response.success) {
+        setProjects(response.projects);
+        // Extraire les catégories des projets
+        const uniqueCategories = [...new Set(response.projects.map(p => p.category))];
+        setCategories(uniqueCategories);
+      } else {
+        console.error(response.error);
       }
+      setLoading(false);
     };
+
     fetchProjects();
-  }, []);
+  }, [activeFilter, currentPage]);
 
   const filteredProjects = useMemo(() => {
-    if (activeFilter === "*") {
-      return projects;
-    }
-    return projects.filter((project) => project.category === activeFilter);
+    return activeFilter === "*" ? projects : projects.filter((project) => project.category === activeFilter);
   }, [projects, activeFilter]);
-
-  const indexOfLastProject = currentPage * projectsPerPage;
-  const indexOfFirstProject = indexOfLastProject - projectsPerPage;
-  const currentProjects = filteredProjects.slice(indexOfFirstProject, indexOfLastProject);
 
   const totalPages = Math.ceil(filteredProjects.length / projectsPerPage);
 
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
-    setCurrentPage(1);
+    setCurrentPage(1); // Réinitialiser la page à 1 lors du changement de filtre
   };
 
   const handlePageChange = (page) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    setCurrentPage(page);
   };
 
   return (
@@ -95,16 +77,15 @@ const Projects = () => {
         <div className="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
           {loading ? (
             <p className="loading">Chargement des projets...</p>
-          ) : currentProjects.length > 0 ? (
-            currentProjects.map((project, index) => (
-              <div className="col-md-4" key={index}>
+          ) : filteredProjects.length > 0 ? (
+            filteredProjects.map((project) => (
+              <div className="col-md-4" key={project._id}>
                 <div className="project-item">
-                  <img src={project.image} alt={project.name} className="img-fluid" />
-                  <h5>{project.name}</h5>
+                  <img src={project.imageUrl || "default-image.jpg"} alt={project.title} className="img-fluid" />
+                  <h5>{project.title}</h5>
                   <p>{project.description}</p>
                   <span className="category">{project.category}</span>
-                  {/* Lien vers la page des détails du projet */}
-                  <Link to={`/projects/${project.id}`} className="btn btn-primary">
+                  <Link to={`/projects/${project._id}`} className="btn btn-primary">
                     Voir les détails
                   </Link>
                 </div>
@@ -115,6 +96,7 @@ const Projects = () => {
           )}
         </div>
 
+        {/* Pagination */}
         <div className="pagination">
           <ul className="pagination-list list-inline">
             <li
