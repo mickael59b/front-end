@@ -32,3 +32,14 @@ a {
   margin: 0 auto 20px auto;
   list-style: none;
 }
+.portfolio-filters li {
+  cursor: pointer;
+  display: inline-block;
+  padding: 0;
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 10px;
+  line-height: 1;
+  margin-bottom: 5px;
+  transition: all 0.3s ease-in-out;
+}

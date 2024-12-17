@@ -4,8 +4,7 @@ import Carte_map from '../assets/images/contact-bg.png';
 import { Helmet } from 'react-helmet';
 import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
-import validator from 'validator';
-import Message from '../components/Message'; // Composant pour afficher les erreurs et succès
+import Message from '../components/Message'; // Composant pour afficher erreurs/succès
 
 const Contact = () => {
     const recaptchaRef = useRef(null);
@@ -13,19 +12,13 @@ const Contact = () => {
         firstName: '',
         lastName: '',
         email: '',
-        message: '',
+        message: ''
     });
     const [formError, setFormError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formSuccess, setFormSuccess] = useState(false);
 
-    const errorMessages = {
-        requiredFields: "Tous les champs sont obligatoires.",
-        invalidEmail: "L'email fourni est invalide.",
-        shortMessage: "Votre message doit contenir au moins 10 caractères.",
-        recaptchaError: "Veuillez compléter le reCAPTCHA.",
-        submitError: "Erreur lors de l'envoi du formulaire.",
-    };
+    const RECAPTCHA_SITE_KEY = "6LdVeAspAAAAAAhQb8mrSQAuuMtsW2HnLVkW_WJZ"; // Clé publique intégrée directement
 
     // Gestion des changements dans les champs du formulaire
     const handleInputChange = (e) => {
@@ -33,31 +26,32 @@ const Contact = () => {
         setFormData({ ...formData, [id]: value });
     };
 
-    const validateEmail = (email) => validator.isEmail(email);
+    // Validation de l'email
+    const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
 
     // Validation générale du formulaire
     const validateForm = () => {
         const { firstName, lastName, email, message } = formData;
 
         if (!firstName.trim() || !lastName.trim() || !email.trim() || !message.trim()) {
-            return errorMessages.requiredFields;
+            return "Tous les champs sont obligatoires.";
         }
         if (!validateEmail(email)) {
-            return errorMessages.invalidEmail;
+            return "L'email fourni est invalide.";
         }
         if (message.length < 10) {
-            return errorMessages.shortMessage;
+            return "Votre message doit contenir au moins 10 caractères.";
         }
         return '';
     };
 
-    // Soumission du formulaire
+    // Envoi du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const recaptchaValue = recaptchaRef.current.getValue();
+
         if (!recaptchaValue) {
-            setFormError(errorMessages.recaptchaError);
+            setFormError("Veuillez compléter le reCAPTCHA.");
             return;
         }
 
@@ -68,6 +62,7 @@ const Contact = () => {
         }
 
         setIsSubmitting(true);
+
         try {
             const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/contact', {
                 ...formData,
@@ -76,16 +71,17 @@ const Contact = () => {
 
             if (response.data.success) {
                 setFormSuccess(true);
-                setFormError('');
                 setFormData({ firstName: '', lastName: '', email: '', message: '' });
                 recaptchaRef.current.reset();
+                setFormError('');
                 setTimeout(() => setFormSuccess(false), 3000);
             } else {
-                setFormError(response.data.message || errorMessages.submitError);
+                setFormError('Erreur lors de l\'envoi du formulaire.');
             }
         } catch (error) {
-            const serverError = error.response?.data?.message || errorMessages.submitError;
-            setFormError(serverError);
+            setFormError(
+                error.response?.data.message || 'Une erreur est survenue. Veuillez réessayer plus tard.'
+            );
         } finally {
             setIsSubmitting(false);
         }
@@ -119,56 +115,48 @@ const Contact = () => {
                             <form onSubmit={handleSubmit} noValidate>
                                 <div className="row mb-3">
                                     <div className="col-12 col-md-6">
-                                        <label htmlFor="firstName" className="form-label">
-                                            First Name <span className="text-danger">*</span>
-                                        </label>
+                                        <label htmlFor="firstName" className="form-label">First Name *</label>
                                         <input
                                             type="text"
                                             id="firstName"
                                             value={formData.firstName}
                                             onChange={handleInputChange}
-                                            className={`form-control`}
+                                            className="form-control"
                                             required
                                         />
                                     </div>
                                     <div className="col-12 col-md-6">
-                                        <label htmlFor="lastName" className="form-label">
-                                            Last Name <span className="text-danger">*</span>
-                                        </label>
+                                        <label htmlFor="lastName" className="form-label">Last Name *</label>
                                         <input
                                             type="text"
                                             id="lastName"
                                             value={formData.lastName}
                                             onChange={handleInputChange}
-                                            className={`form-control`}
+                                            className="form-control"
                                             required
                                         />
                                     </div>
                                 </div>
 
                                 <div className="mb-3">
-                                    <label htmlFor="email" className="form-label">
-                                        Email <span className="text-danger">*</span>
-                                    </label>
+                                    <label htmlFor="email" className="form-label">Email *</label>
                                     <input
                                         type="email"
                                         id="email"
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        className={`form-control`}
+                                        className="form-control"
                                         required
                                     />
                                 </div>
 
                                 <div className="mb-3">
-                                    <label htmlFor="message" className="form-label">
-                                        Message <span className="text-danger">*</span>
-                                    </label>
+                                    <label htmlFor="message" className="form-label">Message *</label>
                                     <textarea
                                         id="message"
                                         value={formData.message}
                                         onChange={handleInputChange}
-                                        className={`form-control`}
+                                        className="form-control"
                                         rows="5"
                                         required
                                     />
@@ -178,7 +166,7 @@ const Contact = () => {
                                     <div className="recaptcha-container">
                                         <ReCAPTCHA
                                             ref={recaptchaRef}
-                                            sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+                                            sitekey={RECAPTCHA_SITE_KEY} // Clé publique intégrée directement
                                             disabled={isSubmitting}
                                         />
                                     </div>
@@ -187,6 +175,7 @@ const Contact = () => {
                                     </button>
                                 </div>
 
+                                {/* Messages d'erreur et de succès */}
                                 {formError && <Message type="danger" message={formError} />}
                                 {formSuccess && <Message type="success" message="Votre message a été envoyé avec succès !" />}
                             </form>
