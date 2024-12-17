@@ -47,40 +47,39 @@ const Contact = () => {
     // Envoi du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const validationError = validateForm();
         if (validationError) {
             setFormError(validationError);
             return;
         }
-
+    
         setIsSubmitting(true);
-
+    
+        console.log("Données envoyées au serveur:", formData); // Affiche les données du formulaire
+    
         try {
-            console.log("Sending form data to server...", formData); // Log data being sent
-            const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/contact', {
-                ...formData,
-            });
-
-            console.log("Server response:", response); // Log server response
-
+            const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/contact', formData);
+    
+            console.log("Server response:", response); // Affiche la réponse complète du serveur
+    
             if (response.data.success) {
-                console.log("Form submission successful."); // Log success
+                console.log("Form submission successful.");
                 setFormSuccess(true);
                 setFormData({ firstName: '', lastName: '', email: '', message: '' });
                 setFormError('');
                 setTimeout(() => setFormSuccess(false), 3000);
+    
+                // Afficher les données reçues dans la réponse
+                console.log("Données reçues de l'API:", response.data.formData);
             } else {
-                console.log("Server returned an error:", response.data); // Log server error
+                console.log("Server returned an error:", response.data);
                 setFormError('Erreur lors de l\'envoi du formulaire.');
             }
         } catch (error) {
-            console.error("Error during form submission:", error); // Log error
-            setFormError(
-                error.response?.data.message || 'Une erreur est survenue. Veuillez réessayer plus tard.'
-            );
+            console.error("Error during form submission:", error);
+            setFormError(error.response?.data.message || 'Une erreur est survenue. Veuillez réessayer plus tard.');
         } finally {
-            console.log("Form submission completed."); // Log completion
             setIsSubmitting(false);
         }
     };
