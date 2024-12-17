@@ -17,6 +17,17 @@ const handleError = (error) => {
   }
 };
 
+export const supprimerProjet = async (id) => {
+  try {
+    const response = await axios.delete(`${API_BASE_URL}/${id}`, {
+      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    });
+    return { success: true, message: 'Projet supprimé avec succès' };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
 // Récupérer tous les projets
 export const obtenirTousLesProjets = async () => {
   try {
