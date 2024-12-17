@@ -1,5 +1,5 @@
-.lists {
-    background-image: url('/images/contact-bg.png'); /* Testez avec un chemin absolu */
+.lists{
+    background-image: url('../images/contact-bg.png'); /* Testez avec un chemin absolu */
     background-position: center center;
     background-repeat: no-repeat;
     background-size: cover; /* Ajuste l'image pour couvrir toute la zone */
