@@ -171,7 +171,7 @@ const Contact = () => {
                                     <div className="recaptcha-container">
                                         <ReCAPTCHA
                                             ref={recaptchaRef}
-                                            sitekey="6LdVeAspAAAAAAhQb8mrSQAuuMtsW2HnLVkW_WJZ"
+                                            sitekey="6LdVeAspAAAAAAhQb8mrSQAuuMtsW2HnLVkW_WJZ"  // Remplacez par votre propre clé
                                             disabled={isSubmitting}
                                         />
                                     </div>
