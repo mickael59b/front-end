@@ -105,6 +105,7 @@ const Contact = () => {
                                     Contactez-moi pour discuter de votre projet et découvrir comment je peux
                                     vous aider à faire briller votre marque.
                                 </p>
+                                <div className='lists'></div>
                             </div>
                         </div>
 
