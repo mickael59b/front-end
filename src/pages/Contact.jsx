@@ -23,14 +23,12 @@ const Contact = () => {
     // Gestion des changements dans les champs du formulaire
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        console.log(`Input change detected: ${id} = ${value}`); // Log input change
         setFormData({ ...formData, [id]: value });
     };
 
     // Validation de l'email
     const validateEmail = (email) => {
         const isValid = /\S+@\S+\.\S+/.test(email);
-        console.log(`Validating email: ${email} - IsValid: ${isValid}`); // Log email validation
         return isValid;
     };
 
