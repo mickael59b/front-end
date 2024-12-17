@@ -23,40 +23,53 @@ const Contact = () => {
     // Gestion des changements dans les champs du formulaire
     const handleInputChange = (e) => {
         const { id, value } = e.target;
+        console.log(`Input change detected: ${id} = ${value}`); // Log input change
         setFormData({ ...formData, [id]: value });
     };
 
     // Validation de l'email
-    const validateEmail = (email) => /\S+@\S+\.\S+/.test(email);
+    const validateEmail = (email) => {
+        const isValid = /\S+@\S+\.\S+/.test(email);
+        console.log(`Validating email: ${email} - IsValid: ${isValid}`); // Log email validation
+        return isValid;
+    };
 
     // Validation générale du formulaire
     const validateForm = () => {
         const { firstName, lastName, email, message } = formData;
 
         if (!firstName.trim() || !lastName.trim() || !email.trim() || !message.trim()) {
+            console.log("Validation error: All fields are required.");
             return "Tous les champs sont obligatoires.";
         }
         if (!validateEmail(email)) {
+            console.log("Validation error: Invalid email.");
             return "L'email fourni est invalide.";
         }
         if (message.length < 10) {
+            console.log("Validation error: Message too short.");
             return "Votre message doit contenir au moins 10 caractères.";
         }
+        console.log("Form validation passed."); // Log successful validation
         return '';
     };
 
     // Envoi du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
+        console.log("Form submission started."); // Log submission start
         const recaptchaValue = recaptchaRef.current.getValue();
+        console.log(`reCAPTCHA value: ${recaptchaValue}`); // Log reCAPTCHA value
 
         if (!recaptchaValue) {
+            console.log("reCAPTCHA validation failed."); // Log reCAPTCHA error
             setFormError("Veuillez compléter le reCAPTCHA.");
             return;
         }
 
         const validationError = validateForm();
         if (validationError) {
+            console.log(`Form validation error: ${validationError}`); // Log validation error
             setFormError(validationError);
             return;
         }
@@ -64,25 +77,32 @@ const Contact = () => {
         setIsSubmitting(true);
 
         try {
+            console.log("Sending form data to server...", formData); // Log data being sent
             const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/contact', {
                 ...formData,
                 recaptchaToken: recaptchaValue,
             });
 
+            console.log("Server response:", response); // Log server response
+
             if (response.data.success) {
+                console.log("Form submission successful."); // Log success
                 setFormSuccess(true);
                 setFormData({ firstName: '', lastName: '', email: '', message: '' });
                 recaptchaRef.current.reset();
                 setFormError('');
                 setTimeout(() => setFormSuccess(false), 3000);
             } else {
+                console.log("Server returned an error:", response.data); // Log server error
                 setFormError('Erreur lors de l\'envoi du formulaire.');
             }
         } catch (error) {
+            console.error("Error during form submission:", error); // Log error
             setFormError(
                 error.response?.data.message || 'Une erreur est survenue. Veuillez réessayer plus tard.'
             );
         } finally {
+            console.log("Form submission completed."); // Log completion
             setIsSubmitting(false);
         }
     };
