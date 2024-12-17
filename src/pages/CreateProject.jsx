@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';  // Importation d'Axios
 import { creerProjet } from '../services/apiProjets'; // Assurez-vous que le chemin vers le fichier API est correct
 
 const CreateProject = () => {
@@ -36,21 +37,21 @@ const CreateProject = () => {
     }
   };
 
-  // Fonction pour uploader l'image via l'API
+  // Fonction pour uploader l'image via l'API avec Axios
   const uploadImage = async (imageFile) => {
     const formData = new FormData();
     formData.append('image', imageFile); // Ajouter l'image à la FormData
 
     try {
-      const response = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+      // Utilisation d'Axios pour envoyer la requête
+      const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/upload', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data', // Nécessaire pour les fichiers
+        },
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        return data.imageUrl; // Retourne l'URL de l'image uploadée
+      if (response.status === 200) {
+        return response.data.fileUrl; // Retourne l'URL de l'image uploadée
       } else {
         throw new Error('Erreur lors de l\'upload de l\'image');
       }
@@ -297,3 +298,4 @@ const CreateProject = () => {
 };
 
 export default CreateProject;
+
