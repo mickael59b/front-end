@@ -1,4 +1,5 @@
 import React, { useRef, useState } from 'react';
+import Carte_map from '../assets/images/contact-bg.png';
 import '../assets/css/contact.css';
 import { Helmet } from 'react-helmet';
 import ReCAPTCHA from 'react-google-recaptcha';
@@ -105,7 +106,7 @@ const Contact = () => {
                                     Contactez-moi pour discuter de votre projet et découvrir comment je peux
                                     vous aider à faire briller votre marque.
                                 </p>
-                                <div className='lists'></div>
+                                <Carte_map />
                             </div>
                         </div>
 
