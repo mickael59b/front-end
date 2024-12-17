@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import Carte_map from '../assets/images/contact-bg.png';
 import '../assets/css/contact.css';
+import Carte_map from '../assets/images/contact-bg.png';
 import { Helmet } from 'react-helmet';
 import ReCAPTCHA from 'react-google-recaptcha';
 import axios from 'axios';
