@@ -1,6 +1,12 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ProfileImg from '../assets/images/profile.png'; // Chemin vers votre photo de profil
+import icon_html5 from '../assets/images/html-5.png'; 
+import icon_css from '../assets/images/css-3.png';
+import icon_js from'../assets/images/javascript.png';
+import icon_react from '../assets/images/react.png';
+import icon_bootstrap from '../assets/images/bootstrap.png';
+import icon_git from '../assets/images/git.png';
 
 const About = () => {
   useEffect(() => {
@@ -55,27 +61,27 @@ const About = () => {
               <h2 className="fw-bold mb-3">Outils et Technologies</h2>
               <div className="row text-center">
                 <div className="col-4 mb-3">
-                  <img src="assets/images/icons/html.svg" alt="HTML" className="img-fluid" style={{ height: '50px' }} />
+                  <img src={icon_html5} alt="HTML" className="img-fluid" style={{ height: '50px' }} />
                   <p className="mt-2">HTML</p>
                 </div>
                 <div className="col-4 mb-3">
-                  <img src="assets/images/icons/css.svg" alt="CSS" className="img-fluid" style={{ height: '50px' }} />
+                  <img src={icon_css} alt="CSS" className="img-fluid" style={{ height: '50px' }} />
                   <p className="mt-2">CSS</p>
                 </div>
                 <div className="col-4 mb-3">
-                  <img src="assets/images/icons/js.svg" alt="JavaScript" className="img-fluid" style={{ height: '50px' }} />
+                  <img src={icon_js} alt="JavaScript" className="img-fluid" style={{ height: '50px' }} />
                   <p className="mt-2">JavaScript</p>
                 </div>
                 <div className="col-4 mb-3">
-                  <img src="assets/images/icons/react.svg" alt="React" className="img-fluid" style={{ height: '50px' }} />
+                  <img src={icon_react} alt="React" className="img-fluid" style={{ height: '50px' }} />
                   <p className="mt-2">React</p>
                 </div>
                 <div className="col-4 mb-3">
-                  <img src="assets/images/icons/bootstrap.svg" alt="Bootstrap" className="img-fluid" style={{ height: '50px' }} />
+                  <img src={icon_bootstrap} alt="Bootstrap" className="img-fluid" style={{ height: '50px' }} />
                   <p className="mt-2">Bootstrap</p>
                 </div>
                 <div className="col-4 mb-3">
-                  <img src="assets/images/icons/git.svg" alt="Git" className="img-fluid" style={{ height: '50px' }} />
+                  <img src={icon_git} alt="Git" className="img-fluid" style={{ height: '50px' }} />
                   <p className="mt-2">Git</p>
                 </div>
               </div>
