@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import ProfileImg from '../assets/images/profile.png'; // Chemin vers votre photo de profil
-import icon_html5 from '../assets/images/html-5.png'; 
-import icon_css from '../assets/images/css-3.png';
-import icon_js from'../assets/images/javascript.png';
-import icon_react from '../assets/images/react.png';
-import icon_bootstrap from '../assets/images/bootstrap.png';
-import icon_git from '../assets/images/git.png';
+import icon_html5 from '../assets/images/html-5.svg'; 
+import icon_css from '../assets/images/css-3.svg';
+import icon_js from'../assets/images/javascript.svg';
+import icon_react from '../assets/images/react.svg';
+import icon_bootstrap from '../assets/images/bootstrap.svg';
+import icon_git from '../assets/images/git.svg';
 
 const About = () => {
   useEffect(() => {
