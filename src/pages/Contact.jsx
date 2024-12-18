@@ -3,32 +3,31 @@ import '../assets/css/contact.css';
 import Carte_map from '../assets/images/contact-bg.png';
 import { Helmet } from 'react-helmet';
 import axios from 'axios';
-import Message from '../components/Message'; // Composant pour afficher erreurs/succès
+import Message from '../components/Message';
+import ReCAPTCHA from 'react-google-recaptcha'; // Import reCAPTCHA
 
 const Contact = () => {
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
-        message: ''
+        message: '',
     });
     const [formError, setFormError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formSuccess, setFormSuccess] = useState(false);
+    const [recaptchaToken, setRecaptchaToken] = useState(''); // Pour stocker le token
+    const recaptchaRef = useRef(null); // Pour accéder au reCAPTCHA
 
-    // Gestion des changements dans les champs du formulaire
     const handleInputChange = (e) => {
         const { id, value } = e.target;
         setFormData({ ...formData, [id]: value });
     };
 
-    // Validation de l'email
     const validateEmail = (email) => {
-        const isValid = /\S+@\S+\.\S+/.test(email);
-        return isValid;
+        return /\S+@\S+\.\S+/.test(email);
     };
 
-    // Validation générale du formulaire
     const validateForm = () => {
         const { firstName, lastName, email, message } = formData;
 
@@ -41,43 +40,40 @@ const Contact = () => {
         if (message.length < 10) {
             return "Votre message doit contenir au moins 10 caractères.";
         }
+        if (!recaptchaToken) {
+            return "Veuillez compléter le reCAPTCHA.";
+        }
         return '';
     };
 
-    // Envoi du formulaire
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         const validationError = validateForm();
         if (validationError) {
             setFormError(validationError);
             return;
         }
-    
+
         setIsSubmitting(true);
-    
-        console.log("Données envoyées au serveur:", formData); // Affiche les données du formulaire
-    
+
         try {
-            const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/contact', formData);
-    
-            console.log("Server response:", response); // Affiche la réponse complète du serveur
-    
+            const response = await axios.post('https://back-end-api-gfl0.onrender.com/api/contact', {
+                ...formData,
+                recaptchaToken, // Inclure le token reCAPTCHA
+            });
+
             if (response.data.success) {
-                console.log("Form submission successful.");
                 setFormSuccess(true);
                 setFormData({ firstName: '', lastName: '', email: '', message: '' });
+                setRecaptchaToken(''); // Réinitialiser le token
                 setFormError('');
+                recaptchaRef.current.reset(); // Réinitialiser le reCAPTCHA
                 setTimeout(() => setFormSuccess(false), 3000);
-    
-                // Afficher les données reçues dans la réponse
-                console.log("Données reçues de l'API:", response.data.formData);
             } else {
-                console.log("Server returned an error:", response.data);
                 setFormError('Erreur lors de l\'envoi du formulaire.');
             }
         } catch (error) {
-            console.error("Error during form submission:", error);
             setFormError(error.response?.data.message || 'Une erreur est survenue. Veuillez réessayer plus tard.');
         } finally {
             setIsSubmitting(false);
@@ -158,6 +154,13 @@ const Contact = () => {
                                         required
                                     />
                                 </div>
+
+                                {/* reCAPTCHA */}
+                                <ReCAPTCHA
+                                    sitekey="6LdVeAspAAAAAAhQb8mrSQAuuMtsW2HnLVkW_WJZ" // Remplacez par votre clé publique
+                                    onChange={(token) => setRecaptchaToken(token)}
+                                    ref={recaptchaRef}
+                                />
 
                                 <div className="d-flex justify-content-between align-items-center mb-3">
                                     <button type="submit" className="btn btn-primary" disabled={isSubmitting}>
